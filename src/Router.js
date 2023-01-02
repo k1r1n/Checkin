@@ -5,7 +5,7 @@ import {
   createStackNavigator,
   // CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {CheckIn} from './screens';
+import {CheckIn, History, Setting} from './screens';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 
@@ -33,7 +33,7 @@ const AppNavigator = () => (
     />
     <Tab.Screen
       name="history"
-      component={CheckIn}
+      component={History}
       options={{
         headerShown: false,
         // cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
@@ -42,7 +42,7 @@ const AppNavigator = () => (
     />
     <Tab.Screen
       name="setting"
-      component={CheckIn}
+      component={Setting}
       options={{
         headerShown: false,
         // cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,

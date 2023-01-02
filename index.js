@@ -7,5 +7,6 @@ import App from './src/Router';
 import {name as appName} from './app.json';
 
 import 'react-native-gesture-handler';
+import '@react-native-firebase/app';
 
 AppRegistry.registerComponent(appName, () => App);

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "911069988847",
+    "project_id": "model-myth-373313",
+    "storage_bucket": "model-myth-373313.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911069988847:android:a92bf23425a2abd609581a",
+        "android_client_info": {
+          "package_name": "com.checkin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911069988847-9oh2mam6op9imujg7lpde85de1tanp9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM3JNy4oKniCRscqNBxnm6pWYxeh6qKIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911069988847-9oh2mam6op9imujg7lpde85de1tanp9s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,6 +9,8 @@ import {
 import {getDistance, getPreciseDistance} from 'geolib';
 import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import {Button} from '../components';
 
 export const CheckIn = () => {
@@ -88,17 +90,31 @@ export const CheckIn = () => {
     );
   };
 
-  const onCheckIn = () => {
+  const onCheckIn = async () => {
     requestCameraPermission();
   };
 
   const onCapture = async () => {
-    const photo = await camera.current.takePhoto({
-      flash: 'on',
-    });
+    const photo = await camera.current.takePhoto();
+    const checkInCollection = await firestore().collection('checkin');
+    const reference = storage().ref(photo.path.replace(/^.*[\\/]/, ''));
+    await reference.putFile(photo.path);
+    const url = await reference.getDownloadURL();
+
+    checkInCollection
+      .add({
+        location: {
+          latitude: mark.latitude,
+          longitude: mark.longitude,
+        },
+        timestamp: Date.now(),
+        image: url,
+      })
+      .then(() => {
+        console.log('User added!');
+      });
 
     setOpenCamera(false);
-    console.log('photo', photo);
   };
 
   const renderCamera = () => {
@@ -158,7 +174,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'hotpink',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
