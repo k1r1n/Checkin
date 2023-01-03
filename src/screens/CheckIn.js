@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   TouchableOpacity,
   Text,
+  Dimensions,
 } from 'react-native';
 import {getPreciseDistance} from 'geolib';
 import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
@@ -13,6 +14,8 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {Button} from '../components';
 import {INITIAL_REGION} from '../constants';
+
+const {height} = Dimensions.get('window');
 
 export const CheckIn = () => {
   const [distance, setDistance] = useState(0);
@@ -125,11 +128,23 @@ export const CheckIn = () => {
     );
   };
 
+  const renderMeter = () => {
+    if (distance > 1000) {
+      return <Text>{distance / 1000} km from you</Text>;
+    }
+    if (distance > 0 && distance < 1000) {
+      return <Text>{distance / 1000} km from you</Text>;
+    }
+
+    return <Text>Your in area</Text>;
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Show on the map</Text>
       {device && openCamera && renderCamera()}
       {!openCamera && (
-        <>
+        <View style={styles.viewMap}>
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
@@ -150,9 +165,11 @@ export const CheckIn = () => {
               </>
             )}
           </MapView>
-          {distance <= 0 && <Button title="CHECK IN" onPress={onCheckIn} />}
-        </>
+        </View>
       )}
+      <Text>Location</Text>
+      {renderMeter()}
+      {distance <= 0 && <Button title="CHECK IN" onPress={onCheckIn} />}
     </View>
   );
 };
@@ -161,11 +178,23 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     flex: 1,
-    justifyContent: 'flex-end',
     alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#fff',
+  },
+  viewMap: {
+    width: '100%',
+    height: height - 280,
+    overflow: 'hidden',
+    borderRadius: 30,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  title: {
+    color: '#333',
+    fontSize: 32,
+    fontWeight: 'bold',
   },
   capture: {
     width: 80,
