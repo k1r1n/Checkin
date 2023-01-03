@@ -18,7 +18,7 @@ const {height} = Dimensions.get('window');
 
 export const Setting = () => {
   const [mark, setMark] = useState({latitude: 13.7913, longitude: 100.5815});
-  const [radius, setRadius] = useState(); // meter
+  const [radius, setRadius] = useState([100]); // meter
 
   const onLocationChange = event => {
     const {latitude, longitude} = event.nativeEvent.coordinate;
@@ -51,25 +51,25 @@ export const Setting = () => {
         showsCompass>
         <Circle
           center={mark}
-          radius={radius}
+          radius={Number(radius)}
           strokeColor="hotpink"
           fillColor="rgba(255,150,180,0.4)"
         />
         <Marker draggable coordinate={mark} onDragEnd={onLocationChange} />
       </MapView>
-      <View style={{backgroundColor: 'hotpink', width: '90%'}}>
+      <View style={styles.slider}>
         <Slider
-          value={[1000]}
+          value={radius}
           step={100}
           onValueChange={value => setRadius(value)}
           minimumValue={0}
-          maximumValue={30000}
+          maximumValue={10000}
           animateTransitions
           minimumTrackTintColor="#e6a954"
           thumbStyle={styles.thumb}
           trackStyle={styles.track}
         />
-        {/* <Text>Value: {radius}</Text> */}
+        <Text>Distance: {Number(radius) / 1000} km</Text>
       </View>
       <Button title="SET" onPress={onSetLocation} />
     </View>
@@ -101,5 +101,8 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: 1,
     height: 14,
+  },
+  slider: {
+    width: '90%',
   },
 });
