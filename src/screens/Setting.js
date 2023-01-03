@@ -11,14 +11,27 @@ import {getDistance, getPreciseDistance} from 'geolib';
 import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 import {Button} from '../components';
+import {INITIAL_REGION} from '../constants';
 
 const {height} = Dimensions.get('window');
 
 export const Setting = () => {
-  const [mark, setMark] = useState({latitude: 13.7913, longitude: 100.5815});
-  const [radius, setRadius] = useState([100]); // meter
+  const [mark, setMark] = useState();
+  const [radius, setRadius] = useState([0]); // meter
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('setting')
+      .doc('distance')
+      .onSnapshot(documentSnapshot => {
+        const {radius: areaRadius, location} = documentSnapshot.data();
+
+        setMark(location);
+        setRadius([areaRadius]);
+      });
+    return () => subscriber();
+  }, []);
 
   const onLocationChange = event => {
     const {latitude, longitude} = event.nativeEvent.coordinate;
@@ -30,32 +43,47 @@ export const Setting = () => {
     setMark(currentLocation);
   };
 
-  const onSetLocation = async () => {};
+  const onSetLocation = async () => {
+    const settingCollection = await firestore()
+      .collection('setting')
+      .doc('distance');
+
+    settingCollection
+      .update({
+        location: {
+          latitude: mark.latitude,
+          longitude: mark.longitude,
+        },
+        radius: Number(radius),
+      })
+      .then(() => {
+        console.log('set position');
+      });
+  };
 
   return (
     <View style={styles.container}>
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
-        region={{
-          latitude: 13.7563,
-          longitude: 100.5018,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121,
-        }}
+        region={INITIAL_REGION}
         // showsMyLocationButton={true}
         showsUserLocation
         // userLocationPriority="high"
         // userLocationUpdateInterval={1000}
         // userLocationFastestInterval={10000}
         showsCompass>
-        <Circle
-          center={mark}
-          radius={Number(radius)}
-          strokeColor="hotpink"
-          fillColor="rgba(255,150,180,0.4)"
-        />
-        <Marker draggable coordinate={mark} onDragEnd={onLocationChange} />
+        {mark && (
+          <>
+            <Circle
+              center={mark}
+              radius={Number(radius)}
+              strokeColor="hotpink"
+              fillColor="rgba(255,150,180,0.4)"
+            />
+            <Marker draggable coordinate={mark} onDragEnd={onLocationChange} />
+          </>
+        )}
       </MapView>
       <View style={styles.slider}>
         <Slider

@@ -6,39 +6,42 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {getDistance, getPreciseDistance} from 'geolib';
+import {getPreciseDistance} from 'geolib';
 import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {Button} from '../components';
+import {INITIAL_REGION} from '../constants';
 
 export const CheckIn = () => {
   const [distance, setDistance] = useState(0);
   const [openCamera, setOpenCamera] = useState(false);
-  const mark = {latitude: 13.7913, longitude: 100.5815};
-  const radius = 100; // meter
   const devices = useCameraDevices();
   const device = devices.front;
   const camera = useRef(null);
+  const [mark, setMark] = useState();
+  const [radius, setRadius] = useState(0);
 
   useEffect(() => {
     requestLocationPermission();
+
+    const subscriber = firestore()
+      .collection('setting')
+      .doc('distance')
+      .onSnapshot(documentSnapshot => {
+        const {radius: areaRadius, location} = documentSnapshot.data();
+
+        setMark(location);
+        setRadius(areaRadius);
+      });
+    return () => subscriber();
   }, []);
 
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        // {
-        //   title: 'Cool Photo App Camera Permission',
-        //   message:
-        //     'Cool Photo App needs access to your camera ' +
-        //     'so you can take awesome pictures.',
-        //   buttonNeutral: 'Ask Me Later',
-        //   buttonNegative: 'Cancel',
-        //   buttonPositive: 'OK',
-        // },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can use the camera');
@@ -56,7 +59,6 @@ export const CheckIn = () => {
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
         setOpenCamera(true);
       } else {
         console.log('Camera permission denied');
@@ -74,20 +76,12 @@ export const CheckIn = () => {
     };
 
     calculateDistance(currentLocation);
-    console.log('User Location: ', latitude, longitude);
   };
 
   const calculateDistance = currentLocation => {
-    var dis = getPreciseDistance(
-      currentLocation,
-      // {latitude: 13.7914, longitude: 100.5824}, // current
-      mark, // mark
-    );
+    var dis = getPreciseDistance(currentLocation, mark);
 
     setDistance(dis - radius);
-    console.log(
-      `Distance\n\n${dis} Meter OR ${dis / 1000} KM = ${dis - radius}`,
-    );
   };
 
   const onCheckIn = async () => {
@@ -112,9 +106,8 @@ export const CheckIn = () => {
       })
       .then(() => {
         console.log('User added!');
+        setOpenCamera(false);
       });
-
-    setOpenCamera(false);
   };
 
   const renderCamera = () => {
@@ -138,28 +131,24 @@ export const CheckIn = () => {
       {!openCamera && (
         <>
           <MapView
-            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+            provider={PROVIDER_GOOGLE}
             style={styles.map}
-            region={{
-              latitude: 13.7563,
-              longitude: 100.5018,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121,
-            }}
-            // showsMyLocationButton={true}
-            showsUserLocation
-            // userLocationPriority="high"
-            // userLocationUpdateInterval={1000}
+            region={INITIAL_REGION}
             userLocationFastestInterval={10000}
-            showsCompass
-            onUserLocationChange={onUserLocationChange}>
-            <Circle
-              center={mark}
-              radius={radius}
-              strokeColor="hotpink"
-              fillColor="rgba(255,150,180,0.4)"
-            />
-            <Marker coordinate={mark} />
+            onUserLocationChange={onUserLocationChange}
+            showsUserLocation
+            showsCompass>
+            {mark && (
+              <>
+                <Circle
+                  center={mark}
+                  radius={radius}
+                  strokeColor="hotpink"
+                  fillColor="rgba(255,150,180,0.4)"
+                />
+                <Marker coordinate={mark} />
+              </>
+            )}
           </MapView>
           {distance <= 0 && <Button title="CHECK IN" onPress={onCheckIn} />}
         </>
