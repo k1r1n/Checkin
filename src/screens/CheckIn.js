@@ -137,7 +137,7 @@ export const CheckIn = ({navigation}) => {
     if (distance > 1000) {
       return (
         <View style={styles.location}>
-          <MaterialIcons name="place" size={30} color="orange" />
+          <MaterialIcons name="place" size={32} color="orange" />
           <Text style={styles.title}>{distance / 1000}</Text>
           <Text style={styles.subtitle}>km to the destination</Text>
         </View>
@@ -154,7 +154,7 @@ export const CheckIn = ({navigation}) => {
 
     return (
       <View style={styles.location}>
-        <MaterialIcons name="place" size={30} color="orange" />
+        <MaterialIcons name="place" size={32} color="orange" />
         <Text style={styles.title}>0</Text>
         <Text style={styles.subtitle}>km to the destination</Text>
       </View>
@@ -174,7 +174,7 @@ export const CheckIn = ({navigation}) => {
             provider={PROVIDER_GOOGLE}
             style={styles.map}
             region={INITIAL_REGION}
-            userLocationFastestInterval={10000}
+            userLocationFastestInterval={1000}
             onUserLocationChange={onUserLocationChange}
             showsUserLocation
             showsCompass>
@@ -207,14 +207,14 @@ export const CheckIn = ({navigation}) => {
                 onPress={() => {
                   navigation.navigate('history');
                 }}>
-                <MaterialIcons name="history" size={30} color="orange" />
+                <MaterialIcons name="history" size={32} color="orange" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
                   navigation.navigate('setting');
                 }}>
-                <MaterialIcons name="settings" size={30} color="orange" />
+                <MaterialIcons name="settings" size={32} color="orange" />
               </TouchableOpacity>
             </View>
           </View>
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   btn: {
-    padding: 14,
+    padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -318,9 +318,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   navigation: {
-    width: 130,
+    width: 140,
+    marginLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
 });

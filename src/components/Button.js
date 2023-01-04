@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: 'orange',
     padding: 18,
-    margin: 10,
     flex: 1,
     borderRadius: 20,
     alignItems: 'center',

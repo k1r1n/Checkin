@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,16 +7,15 @@ import {
   Dimensions,
 } from 'react-native';
 import {Slider} from '@miblanchard/react-native-slider';
-import {getDistance, getPreciseDistance} from 'geolib';
 import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import IoniconsIcons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import {Button} from '../components';
 import {INITIAL_REGION} from '../constants';
 
 const {height} = Dimensions.get('window');
 
-export const Setting = () => {
+export const Setting = ({navigation}) => {
   const [mark, setMark] = useState();
   const [radius, setRadius] = useState([0]); // meter
 
@@ -63,43 +62,53 @@ export const Setting = () => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-        style={styles.map}
-        region={INITIAL_REGION}
-        // showsMyLocationButton={true}
-        showsUserLocation
-        // userLocationPriority="high"
-        // userLocationUpdateInterval={1000}
-        // userLocationFastestInterval={10000}
-        showsCompass>
-        {mark && (
-          <>
-            <Circle
-              center={mark}
-              radius={Number(radius)}
-              strokeColor="hotpink"
-              fillColor="rgba(255,150,180,0.4)"
-            />
-            <Marker draggable coordinate={mark} onDragEnd={onLocationChange} />
-          </>
-        )}
-      </MapView>
-      <View style={styles.slider}>
-        <Slider
-          value={radius}
-          step={100}
-          onValueChange={value => setRadius(value)}
-          minimumValue={0}
-          maximumValue={10000}
-          animateTransitions
-          minimumTrackTintColor="#e6a954"
-          thumbStyle={styles.thumb}
-          trackStyle={styles.track}
-        />
-        <Text>Distance: {Number(radius) / 1000} km</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.navigate('check-in')}>
+          <IoniconsIcons name="chevron-back-circle" size={32} color="orange" />
+        </TouchableOpacity>
+        <Text style={styles.route}>Setting</Text>
       </View>
-      <Button title="Assigned" onPress={onSetLocation} />
+      <View style={styles.viewMap}>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          region={INITIAL_REGION}
+          showsUserLocation
+          showsCompass>
+          {mark && (
+            <>
+              <Circle
+                center={mark}
+                radius={Number(radius)}
+                strokeColor="orange"
+                fillColor="rgba(255,165,0,0.4)"
+              />
+              <Marker
+                draggable
+                coordinate={mark}
+                onDragEnd={onLocationChange}
+              />
+            </>
+          )}
+        </MapView>
+      </View>
+      <View style={styles.detail}>
+        <View style={styles.slider}>
+          <Text style={styles.title}>Radius: {Number(radius) / 1000} km</Text>
+          <Slider
+            value={radius}
+            step={100}
+            onValueChange={value => setRadius(value)}
+            minimumValue={0}
+            maximumValue={10000}
+            animateTransitions
+            minimumTrackTintColor="#fab95b"
+            thumbStyle={styles.thumb}
+            trackStyle={styles.track}
+          />
+          <Button title="Assigned" onPress={onSetLocation} />
+        </View>
+      </View>
     </View>
   );
 };
@@ -108,29 +117,73 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     flex: 1,
-    justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    position: 'relative',
+  },
+  header: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  route: {
+    marginHorizontal: 10,
+    fontSize: 28,
+    color: '#1a3263',
+  },
+  viewMap: {
+    width: '100%',
+    height,
+    overflow: 'hidden',
+    borderRadius: 30,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: height - 300,
   },
   thumb: {
-    backgroundColor: '#eaeaea',
-    borderColor: '#9a9a9a',
+    backgroundColor: 'orange',
+    borderColor: 'orange',
     borderRadius: 2,
-    borderWidth: 1,
-    height: 20,
-    width: 20,
+    height: 25,
+    width: 25,
   },
   track: {
     backgroundColor: '#fff',
-    borderColor: '#9a9a9a',
+    borderColor: 'orange',
     borderRadius: 2,
     borderWidth: 1,
-    height: 14,
+    height: 20,
   },
   slider: {
-    width: '90%',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1a3263',
+  },
+  detail: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    height: 170,
+    backgroundColor: '#fff',
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 5,
+      height: 0,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    paddingBottom: 0,
+    elevation: 10,
   },
 });
