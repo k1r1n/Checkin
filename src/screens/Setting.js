@@ -99,7 +99,7 @@ export const Setting = () => {
         />
         <Text>Distance: {Number(radius) / 1000} km</Text>
       </View>
-      <Button title="SET" onPress={onSetLocation} />
+      <Button title="Assigned" onPress={onSetLocation} />
     </View>
   );
 };
