@@ -2,14 +2,14 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {CheckIn, History, Setting} from './screens';
-// import {routerPath} from './src/Constant/routerPath';
+import {ROUTER_PATH} from './constants';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => (
   <Stack.Navigator initialRouteName="check-in">
     <Stack.Screen
-      name="check-in"
+      name={ROUTER_PATH.CHECK_IN}
       component={CheckIn}
       options={{
         headerShown: false,
@@ -17,7 +17,7 @@ const AppNavigator = () => (
       }}
     />
     <Stack.Screen
-      name="history"
+      name={ROUTER_PATH.HISTORY}
       component={History}
       options={{
         headerShown: false,
@@ -25,7 +25,7 @@ const AppNavigator = () => (
       }}
     />
     <Stack.Screen
-      name="setting"
+      name={ROUTER_PATH.SETTING}
       component={Setting}
       options={{
         headerShown: false,

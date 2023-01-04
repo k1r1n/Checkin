@@ -11,7 +11,7 @@ import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
 import IoniconsIcons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import {Button} from '../components';
-import {INITIAL_REGION} from '../constants';
+import {INITIAL_REGION, ROUTER_PATH} from '../constants';
 
 const {height} = Dimensions.get('window');
 
@@ -63,7 +63,8 @@ export const Setting = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('check-in')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}>
           <IoniconsIcons name="chevron-back-circle" size={32} color="orange" />
         </TouchableOpacity>
         <Text style={styles.route}>Setting</Text>
