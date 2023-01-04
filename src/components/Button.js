@@ -1,13 +1,13 @@
-import React from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React from 'react'
+import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 
-export const Button = ({onPress, title, isDisabled}) => (
+export const Button = ({ onPress, title, isDisabled }) => (
   <TouchableOpacity
     style={[styles.btn, isDisabled && styles.disabled]}
     onPress={!isDisabled ? onPress : null}>
     <Text style={styles.text}>{title}</Text>
   </TouchableOpacity>
-);
+)
 
 const styles = StyleSheet.create({
   btn: {
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-});
+})

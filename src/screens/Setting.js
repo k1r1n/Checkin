@@ -1,71 +1,67 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Text,
   Dimensions,
-} from 'react-native';
-import {Slider} from '@miblanchard/react-native-slider';
-import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
-import IoniconsIcons from 'react-native-vector-icons/Ionicons';
-import firestore from '@react-native-firebase/firestore';
-import {Button} from '../components';
-import {INITIAL_REGION, ROUTER_PATH} from '../constants';
+} from 'react-native'
+import { Slider } from '@miblanchard/react-native-slider'
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
+import IoniconsIcons from 'react-native-vector-icons/Ionicons'
+import firestore from '@react-native-firebase/firestore'
+import { Button } from '../components'
+import { INITIAL_REGION, ROUTER_PATH } from '../constants'
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window')
 
-export const Setting = ({navigation}) => {
-  const [mark, setMark] = useState();
-  const [radius, setRadius] = useState([0]); // meter
+export const Setting = ({ navigation }) => {
+  const [mark, setMark] = useState()
+  const [radius, setRadius] = useState([0])
 
   useEffect(() => {
     const subscriber = firestore()
       .collection('setting')
       .doc('distance')
       .onSnapshot(documentSnapshot => {
-        const {radius: areaRadius, location} = documentSnapshot.data();
+        const { radius: areaRadius, location } = documentSnapshot.data()
 
-        setMark(location);
-        setRadius([areaRadius]);
-      });
-    return () => subscriber();
-  }, []);
+        setMark(location)
+        setRadius([areaRadius])
+      })
+    return () => subscriber()
+  }, [])
 
   const onLocationChange = event => {
-    const {latitude, longitude} = event.nativeEvent.coordinate;
+    const { latitude, longitude } = event.nativeEvent.coordinate
     const currentLocation = {
       latitude,
       longitude,
-    };
+    }
 
-    setMark(currentLocation);
-  };
+    setMark(currentLocation)
+  }
 
   const onSetLocation = async () => {
     const settingCollection = await firestore()
       .collection('setting')
-      .doc('distance');
+      .doc('distance')
 
-    settingCollection
-      .update({
-        location: {
-          latitude: mark.latitude,
-          longitude: mark.longitude,
-        },
-        radius: Number(radius),
-      })
-      .then(() => {
-        console.log('set position');
-      });
-  };
+    settingCollection.update({
+      location: {
+        latitude: mark.latitude,
+        longitude: mark.longitude,
+      },
+      radius: Number(radius),
+    })
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}>
-          <IoniconsIcons name="chevron-back-circle" size={32} color="orange" />
+          <IoniconsIcons name='chevron-back-circle' size={32} color='orange' />
         </TouchableOpacity>
         <Text style={styles.route}>Setting</Text>
       </View>
@@ -81,8 +77,8 @@ export const Setting = ({navigation}) => {
               <Circle
                 center={mark}
                 radius={Number(radius)}
-                strokeColor="orange"
-                fillColor="rgba(255,165,0,0.4)"
+                strokeColor='orange'
+                fillColor='rgba(255,165,0,0.4)'
               />
               <Marker
                 draggable
@@ -103,16 +99,16 @@ export const Setting = ({navigation}) => {
             minimumValue={0}
             maximumValue={10000}
             animateTransitions
-            minimumTrackTintColor="#fab95b"
+            minimumTrackTintColor='#fab95b'
             thumbStyle={styles.thumb}
             trackStyle={styles.track}
           />
-          <Button title="Assigned" onPress={onSetLocation} />
+          <Button title='Assigned' onPress={onSetLocation} />
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -187,4 +183,4 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     elevation: 10,
   },
-});
+})

@@ -3,4 +3,4 @@ export const INITIAL_REGION = {
   longitude: 100.5018,
   latitudeDelta: 0.015,
   longitudeDelta: 0.0121,
-};
+}

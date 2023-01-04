@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react'
 import {
   StyleSheet,
   View,
@@ -8,99 +8,99 @@ import {
   Dimensions,
   Linking,
   ActivityIndicator,
-} from 'react-native';
-import {getPreciseDistance} from 'geolib';
-import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import {Button} from '../components';
-import {INITIAL_REGION} from '../constants';
+} from 'react-native'
+import { getPreciseDistance } from 'geolib'
+import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
+import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import firestore from '@react-native-firebase/firestore'
+import storage from '@react-native-firebase/storage'
+import { Button } from '../components'
+import { INITIAL_REGION } from '../constants'
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window')
 
-export const CheckIn = ({navigation}) => {
-  const [distance, setDistance] = useState(0);
-  const [openCamera, setOpenCamera] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [mark, setMark] = useState();
-  const [radius, setRadius] = useState(0);
-  const devices = useCameraDevices();
-  const device = devices.front;
-  const camera = useRef(null);
+export const CheckIn = ({ navigation }) => {
+  const [distance, setDistance] = useState(0)
+  const [openCamera, setOpenCamera] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [mark, setMark] = useState()
+  const [radius, setRadius] = useState(0)
+  const devices = useCameraDevices()
+  const device = devices.front
+  const camera = useRef(null)
 
   useEffect(() => {
-    requestLocationPermission();
+    requestLocationPermission()
 
     const subscriber = firestore()
       .collection('setting')
       .doc('distance')
       .onSnapshot(documentSnapshot => {
-        const {radius: areaRadius, location} = documentSnapshot.data();
+        const { radius: areaRadius, location } = documentSnapshot.data()
 
-        setMark(location);
-        setRadius(areaRadius);
-      });
-    return () => subscriber();
-  }, []);
+        setMark(location)
+        setRadius(areaRadius)
+      })
+    return () => subscriber()
+  }, [])
 
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
+      )
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Linking.openSettings();
+        Linking.openSettings()
       }
     } catch (err) {
-      console.warn(err);
+      console.warn(err)
     }
-  };
+  }
 
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
+      )
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setOpenCamera(true);
+        setOpenCamera(true)
       } else {
-        Linking.openSettings();
+        Linking.openSettings()
       }
     } catch (err) {
-      console.warn(err);
+      console.warn(err)
     }
-  };
+  }
 
   const onUserLocationChange = event => {
-    const {latitude, longitude} = event.nativeEvent.coordinate;
+    const { latitude, longitude } = event.nativeEvent.coordinate
     const currentLocation = {
       latitude,
       longitude,
-    };
+    }
 
-    calculateDistance(currentLocation);
-  };
+    calculateDistance(currentLocation)
+  }
 
   const calculateDistance = currentLocation => {
-    var dis = getPreciseDistance(currentLocation, mark);
+    var dis = getPreciseDistance(currentLocation, mark)
 
-    setDistance(dis - radius);
-  };
+    setDistance(dis - radius)
+  }
 
   const onCheckIn = async () => {
-    requestCameraPermission();
-  };
+    requestCameraPermission()
+  }
 
   const onCapture = async () => {
-    setLoading(true);
+    setLoading(true)
 
-    const photo = await camera.current.takePhoto();
-    const checkInCollection = await firestore().collection('checkin');
-    const reference = storage().ref(photo.path.replace(/^.*[\\/]/, ''));
-    await reference.putFile(photo.path);
-    const url = await reference.getDownloadURL();
+    const photo = await camera.current.takePhoto()
+    const checkInCollection = await firestore().collection('checkin')
+    const reference = storage().ref(photo.path.replace(/^.*[\\/]/, ''))
+    await reference.putFile(photo.path)
+    const url = await reference.getDownloadURL()
 
     checkInCollection
       .add({
@@ -112,10 +112,10 @@ export const CheckIn = ({navigation}) => {
         image: url,
       })
       .then(() => {
-        setLoading(false);
-        setOpenCamera(false);
-      });
-  };
+        setLoading(false)
+        setOpenCamera(false)
+      })
+  }
 
   const renderCamera = () => {
     return (
@@ -128,20 +128,20 @@ export const CheckIn = ({navigation}) => {
           isActive
           photo
         />
-        {loading && <ActivityIndicator size="large" />}
+        {loading && <ActivityIndicator size='large' />}
       </View>
-    );
-  };
+    )
+  }
 
   const renderMeter = () => {
     if (distance > 1000) {
       return (
         <View style={styles.location}>
-          <MaterialIcons name="place" size={32} color="orange" />
+          <MaterialIcons name='place' size={32} color='orange' />
           <Text style={styles.title}>{distance / 1000} km</Text>
           <Text style={styles.subtitle}>to the destination</Text>
         </View>
-      );
+      )
     }
     if (distance > 0 && distance < 1000) {
       return (
@@ -149,20 +149,20 @@ export const CheckIn = ({navigation}) => {
           <Text style={styles.title}>{distance / 1000} km</Text>
           <Text style={styles.subtitle}>to the destination</Text>
         </View>
-      );
+      )
     }
 
     return (
       <View style={styles.location}>
-        <MaterialIcons name="place" size={32} color="orange" />
+        <MaterialIcons name='place' size={32} color='orange' />
         <Text style={styles.title}>0 km</Text>
         <Text style={styles.subtitle}>to the destination</Text>
       </View>
-    );
-  };
+    )
+  }
 
   if (device && openCamera) {
-    return renderCamera();
+    return renderCamera()
   }
 
   return (
@@ -183,8 +183,8 @@ export const CheckIn = ({navigation}) => {
                 <Circle
                   center={mark}
                   radius={radius}
-                  strokeColor="orange"
-                  fillColor="rgba(255,165,0,0.4)"
+                  strokeColor='orange'
+                  fillColor='rgba(255,165,0,0.4)'
                 />
                 <Marker coordinate={mark} />
               </>
@@ -197,7 +197,7 @@ export const CheckIn = ({navigation}) => {
           {renderMeter()}
           <View style={styles.checkIn}>
             <Button
-              title="CHECK IN"
+              title='CHECK IN'
               onPress={onCheckIn}
               isDisabled={distance >= 0}
             />
@@ -205,24 +205,24 @@ export const CheckIn = ({navigation}) => {
               <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
-                  navigation.navigate('history');
+                  navigation.navigate('history')
                 }}>
-                <MaterialIcons name="history" size={32} color="orange" />
+                <MaterialIcons name='history' size={32} color='orange' />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
-                  navigation.navigate('setting');
+                  navigation.navigate('setting')
                 }}>
-                <MaterialIcons name="settings" size={32} color="orange" />
+                <MaterialIcons name='settings' size={32} color='orange' />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -325,4 +325,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-});
+})

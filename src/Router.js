@@ -1,13 +1,13 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
 import {
   createStackNavigator,
   CardStyleInterpolators,
-} from '@react-navigation/stack';
-import {CheckIn, History, Setting} from './screens';
-import {ROUTER_PATH} from './constants';
+} from '@react-navigation/stack'
+import { CheckIn, History, Setting } from './screens'
+import { ROUTER_PATH } from './constants'
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator()
 
 const AppNavigator = () => (
   <Stack.Navigator
@@ -21,10 +21,10 @@ const AppNavigator = () => (
     <Stack.Screen name={ROUTER_PATH.HISTORY} component={History} />
     <Stack.Screen name={ROUTER_PATH.SETTING} component={Setting} />
   </Stack.Navigator>
-);
+)
 
 export default () => (
   <NavigationContainer>
     <AppNavigator />
   </NavigationContainer>
-);
+)

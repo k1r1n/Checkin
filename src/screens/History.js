@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -9,25 +9,25 @@ import {
   Dimensions,
   TouchableOpacity,
   Modal,
-} from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import firestore from '@react-native-firebase/firestore';
-import IoniconsIcons from 'react-native-vector-icons/Ionicons';
-import {INITIAL_REGION, ROUTER_PATH} from '../constants';
+} from 'react-native'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import firestore from '@react-native-firebase/firestore'
+import IoniconsIcons from 'react-native-vector-icons/Ionicons'
+import { INITIAL_REGION, ROUTER_PATH } from '../constants'
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window')
 
-export const History = ({navigation}) => {
-  const [list, setList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showData, setShowData] = useState();
+export const History = ({ navigation }) => {
+  const [list, setList] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showData, setShowData] = useState()
 
   useEffect(() => {
     const subscriber = firestore()
       .collection('checkin')
       .orderBy('timestamp', 'desc')
       .onSnapshot(querySnapshot => {
-        let data = [];
+        let data = []
 
         querySnapshot.forEach(documentSnapshot => {
           data = [
@@ -36,43 +36,43 @@ export const History = ({navigation}) => {
               key: documentSnapshot.id,
               ...documentSnapshot.data(),
             },
-          ];
-        });
+          ]
+        })
 
-        setList(data);
-        setLoading(false);
-      });
+        setList(data)
+        setLoading(false)
+      })
 
-    return () => subscriber();
-  }, []);
+    return () => subscriber()
+  }, [])
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator />
   }
 
   const onPress = item => {
-    setShowData(item);
-  };
+    setShowData(item)
+  }
 
-  const renderList = ({item}) => (
+  const renderList = ({ item }) => (
     <TouchableOpacity style={styles.box} onPress={() => onPress(item)}>
-      <Image style={styles.image} source={{uri: item.image}} />
+      <Image style={styles.image} source={{ uri: item.image }} />
     </TouchableOpacity>
-  );
+  )
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}>
-          <IoniconsIcons name="chevron-back-circle" size={32} color="orange" />
+          <IoniconsIcons name='chevron-back-circle' size={32} color='orange' />
         </TouchableOpacity>
         <Text style={styles.route}>History</Text>
       </View>
       <FlatList data={list} numColumns={3} renderItem={renderList} />
       {showData && (
         <Modal
-          animationType="slide"
+          animationType='slide'
           visible={true}
           transparent
           onRequestClose={() => setShowData(null)}>
@@ -84,9 +84,9 @@ export const History = ({navigation}) => {
 
           <View style={styles.modalView}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={styles.selfie}
-              source={{uri: showData?.image}}
+              source={{ uri: showData?.image }}
             />
             <Text style={styles.title}>
               {`Created: ${new Date(
@@ -99,21 +99,21 @@ export const History = ({navigation}) => {
             <MapView
               provider={PROVIDER_GOOGLE}
               style={styles.map}
-              region={{...INITIAL_REGION, ...showData.location}}
+              region={{ ...INITIAL_REGION, ...showData.location }}
               minZoomLevel={17}
               moveOnMarkerPress={false}
               pitchEnabled={false}
               rotateEnabled={false}
               scrollEnabled={false}
               zoomEnabled={false}>
-              <Marker coordinate={{...showData.location}} />
+              <Marker coordinate={{ ...showData.location }} />
             </MapView>
           </View>
         </Modal>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -175,4 +175,4 @@ const styles = StyleSheet.create({
     width: width / 3,
     height: width / 3,
   },
-});
+})
