@@ -138,16 +138,16 @@ export const CheckIn = ({navigation}) => {
       return (
         <View style={styles.location}>
           <MaterialIcons name="place" size={32} color="orange" />
-          <Text style={styles.title}>{distance / 1000}</Text>
-          <Text style={styles.subtitle}>km to the destination</Text>
+          <Text style={styles.title}>{distance / 1000} km</Text>
+          <Text style={styles.subtitle}>to the destination</Text>
         </View>
       );
     }
     if (distance > 0 && distance < 1000) {
       return (
         <View style={styles.location}>
-          <Text style={styles.title}>{distance / 1000}</Text>
-          <Text style={styles.subtitle}>km to the destination</Text>
+          <Text style={styles.title}>{distance / 1000} km</Text>
+          <Text style={styles.subtitle}>to the destination</Text>
         </View>
       );
     }
@@ -155,8 +155,8 @@ export const CheckIn = ({navigation}) => {
     return (
       <View style={styles.location}>
         <MaterialIcons name="place" size={32} color="orange" />
-        <Text style={styles.title}>0</Text>
-        <Text style={styles.subtitle}>km to the destination</Text>
+        <Text style={styles.title}>0 km</Text>
+        <Text style={styles.subtitle}>to the destination</Text>
       </View>
     );
   };
@@ -283,6 +283,7 @@ const styles = StyleSheet.create({
     color: '#999',
     marginHorizontal: 10,
     fontSize: 20,
+    marginTop: 9,
   },
   location: {
     flexDirection: 'row',

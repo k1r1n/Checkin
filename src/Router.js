@@ -1,37 +1,25 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+} from '@react-navigation/stack';
 import {CheckIn, History, Setting} from './screens';
-// import {routerPath} from './src/Constant/routerPath';
+import {ROUTER_PATH} from './constants';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => (
-  <Stack.Navigator initialRouteName="check-in">
-    <Stack.Screen
-      name="check-in"
-      component={CheckIn}
-      options={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    />
-    <Stack.Screen
-      name="history"
-      component={History}
-      options={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    />
-    <Stack.Screen
-      name="setting"
-      component={Setting}
-      options={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    />
+  <Stack.Navigator
+    initialRouteName={ROUTER_PATH.CHECK_IN}
+    screenOptions={{
+      headerShown: false,
+      gestureEnabled: false,
+      cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
+    }}>
+    <Stack.Screen name={ROUTER_PATH.CHECK_IN} component={CheckIn} />
+    <Stack.Screen name={ROUTER_PATH.HISTORY} component={History} />
+    <Stack.Screen name={ROUTER_PATH.SETTING} component={Setting} />
   </Stack.Navigator>
 );
 
