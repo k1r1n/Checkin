@@ -40,14 +40,22 @@ export const History = ({ navigation }) => {
         })
 
         setList(data)
-        setLoading(false)
+
+        const timeOut = setTimeout(() => {
+          setLoading(false)
+          clearTimeout(timeOut)
+        }, 300)
       })
 
     return () => subscriber()
   }, [])
 
   if (loading) {
-    return <ActivityIndicator />
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size='large' />
+      </View>
+    )
   }
 
   const onPress = item => {
