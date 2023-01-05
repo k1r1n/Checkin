@@ -26,6 +26,7 @@ export const CheckIn = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [mark, setMark] = useState()
   const [radius, setRadius] = useState(0)
+  const [userLocation, setUserLocation] = useState()
   const devices = useCameraDevices()
   const device = devices.front
   const camera = useRef(null)
@@ -81,6 +82,7 @@ export const CheckIn = ({ navigation }) => {
     }
 
     calculateDistance(currentLocation)
+    setUserLocation(currentLocation)
   }
 
   const calculateDistance = currentLocation => {
@@ -105,8 +107,8 @@ export const CheckIn = ({ navigation }) => {
     checkInCollection
       .add({
         location: {
-          latitude: mark.latitude,
-          longitude: mark.longitude,
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
         },
         timestamp: Date.now(),
         image: url,
