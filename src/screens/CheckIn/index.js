@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import {
-  StyleSheet,
   View,
   PermissionsAndroid,
   TouchableOpacity,
   Text,
-  Dimensions,
   Linking,
   ActivityIndicator,
 } from 'react-native'
@@ -15,10 +13,9 @@ import { Camera, useCameraDevices } from 'react-native-vision-camera'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
-import { Button } from '../components'
-import { INITIAL_REGION } from '../constants'
-
-const { height } = Dimensions.get('window')
+import { Button } from '../../components'
+import { INITIAL_REGION } from '../../constants'
+import { styles } from './styles'
 
 export const CheckIn = ({ navigation }) => {
   const [distance, setDistance] = useState(0)
@@ -86,12 +83,12 @@ export const CheckIn = ({ navigation }) => {
   }
 
   const calculateDistance = currentLocation => {
-    var dis = getPreciseDistance(currentLocation, mark)
+    const dis = getPreciseDistance(currentLocation, mark)
 
     setDistance(dis - radius)
   }
 
-  const onCheckIn = async () => {
+  const onCheckIn = () => {
     requestCameraPermission()
   }
 
@@ -170,161 +167,54 @@ export const CheckIn = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Check-in on the map</Text>
-      {!openCamera && (
-        <View style={styles.viewMap}>
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            region={INITIAL_REGION}
-            userLocationFastestInterval={1000}
-            onUserLocationChange={onUserLocationChange}
-            showsUserLocation
-            showsCompass>
-            {mark && (
-              <>
-                <Circle
-                  center={mark}
-                  radius={radius}
-                  strokeColor='orange'
-                  fillColor='rgba(255,165,0,0.4)'
-                />
-                <Marker coordinate={mark} />
-              </>
-            )}
-          </MapView>
-        </View>
-      )}
-      {!openCamera && (
-        <View style={styles.detail}>
-          {renderMeter()}
-          <View style={styles.checkIn}>
-            <Button
-              title='CHECK IN'
-              onPress={onCheckIn}
-              isDisabled={distance >= 0}
-            />
-            <View style={styles.navigation}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => {
-                  navigation.navigate('history')
-                }}>
-                <MaterialIcons name='history' size={32} color='orange' />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => {
-                  navigation.navigate('setting')
-                }}>
-                <MaterialIcons name='settings' size={32} color='orange' />
-              </TouchableOpacity>
-            </View>
+      <View style={styles.viewMap}>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          region={INITIAL_REGION}
+          userLocationFastestInterval={1000}
+          onUserLocationChange={onUserLocationChange}
+          showsUserLocation
+          showsCompass>
+          {mark && (
+            <>
+              <Circle
+                center={mark}
+                radius={radius}
+                strokeColor='orange'
+                fillColor='rgba(255,165,0,0.4)'
+              />
+              <Marker coordinate={mark} />
+            </>
+          )}
+        </MapView>
+      </View>
+      <View style={styles.detail}>
+        {renderMeter()}
+        <View style={styles.checkIn}>
+          <Button
+            title='CHECK IN'
+            onPress={onCheckIn}
+            isDisabled={distance >= 0}
+          />
+          <View style={styles.navigation}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                navigation.navigate('history')
+              }}>
+              <MaterialIcons name='history' size={32} color='orange' />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                navigation.navigate('setting')
+              }}>
+              <MaterialIcons name='settings' size={32} color='orange' />
+            </TouchableOpacity>
           </View>
         </View>
-      )}
+      </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    position: 'relative',
-  },
-  header: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a3263',
-    alignSelf: 'flex-start',
-  },
-  viewMap: {
-    width: '100%',
-    height,
-    overflow: 'hidden',
-    borderRadius: 30,
-  },
-  cameraContainer: {
-    flex: 1,
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  detail: {
-    position: 'absolute',
-    width: '100%',
-    bottom: 0,
-    height: 160,
-    backgroundColor: '#fff',
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 5,
-      height: 0,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    paddingBottom: 0,
-    elevation: 10,
-  },
-  title: {
-    color: '#1a3263',
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    color: '#999',
-    marginHorizontal: 10,
-    fontSize: 20,
-    marginTop: 9,
-  },
-  location: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkIn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  capture: {
-    position: 'absolute',
-    width: 80,
-    bottom: 20,
-    zIndex: 999,
-    height: 80,
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    borderColor: 'orange',
-    borderWidth: 2,
-    borderRadius: 40,
-    backgroundColor: '#fff',
-  },
-  btn: {
-    padding: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    shadowColor: 'rgba(0,0,0,0.5)',
-    backgroundColor: '#fff',
-    elevation: 3,
-  },
-  navigation: {
-    width: 140,
-    marginLeft: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-})

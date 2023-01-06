@@ -5,17 +5,14 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Modal,
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import firestore from '@react-native-firebase/firestore'
 import IoniconsIcons from 'react-native-vector-icons/Ionicons'
-import { INITIAL_REGION, ROUTER_PATH } from '../constants'
-
-const { width } = Dimensions.get('window')
+import { INITIAL_REGION, ROUTER_PATH } from '../../constants'
+import { styles } from './styles'
 
 export const History = ({ navigation }) => {
   const [list, setList] = useState([])
@@ -50,14 +47,6 @@ export const History = ({ navigation }) => {
     return () => subscriber()
   }, [])
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size='large' />
-      </View>
-    )
-  }
-
   const onPress = item => {
     setShowData(item)
   }
@@ -67,6 +56,23 @@ export const History = ({ navigation }) => {
       <Image style={styles.image} source={{ uri: item.image }} />
     </TouchableOpacity>
   )
+
+  const renderDate = () => {
+    return (
+      <Text style={styles.title}>
+        Created: ${new Date(showData.timestamp).toDateString()} $
+        {new Date(showData.timestamp).toLocaleTimeString()} at
+      </Text>
+    )
+  }
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size='large' />
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -96,13 +102,7 @@ export const History = ({ navigation }) => {
               style={styles.selfie}
               source={{ uri: showData?.image }}
             />
-            <Text style={styles.title}>
-              {`Created: ${new Date(
-                showData.timestamp,
-              ).toDateString()} ${new Date(
-                showData.timestamp,
-              ).toLocaleTimeString()} at`}
-            </Text>
+            {renderDate()}
 
             <MapView
               provider={PROVIDER_GOOGLE}
@@ -122,65 +122,3 @@ export const History = ({ navigation }) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  header: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  route: {
-    marginHorizontal: 10,
-    fontSize: 28,
-    color: '#1a3263',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  map: {
-    width: '100%',
-    height: 200,
-  },
-  title: {
-    paddingVertical: 10,
-    fontSize: 16,
-    color: '#1a3263',
-  },
-  image: {
-    width: width / 3,
-    height: width / 3,
-  },
-  selfie: {
-    width: '100%',
-    height: 400,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  box: {
-    width: width / 3,
-    height: width / 3,
-  },
-})
