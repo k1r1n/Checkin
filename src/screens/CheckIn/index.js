@@ -1,19 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
-import {
-  View,
-  PermissionsAndroid,
-  TouchableOpacity,
-  Text,
-  Linking,
-  ActivityIndicator,
-} from 'react-native'
+import { View, PermissionsAndroid, Text, Linking } from 'react-native'
 import { getPreciseDistance } from 'geolib'
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
-import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import { useCameraDevices } from 'react-native-vision-camera'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
-import { Button, Header } from '../../components'
+import { Button, Header, CameraComponent } from '../../components'
 import { COLORS, INITIAL_REGION } from '../../constants'
 import { styles } from './styles'
 
@@ -124,22 +117,6 @@ export const CheckIn = ({ navigation }) => {
     navigation.navigate(routerName)
   }
 
-  const renderCamera = () => {
-    return (
-      <View style={styles.cameraContainer}>
-        <TouchableOpacity style={styles.capture} onPress={onCapture} />
-        <Camera
-          ref={camera}
-          style={styles.map}
-          device={device}
-          isActive
-          photo
-        />
-        {loading && <ActivityIndicator size='large' />}
-      </View>
-    )
-  }
-
   const renderMeter = () => {
     const distanceInKm = distance / 1000
     const distanceLabel = distance > 0 ? distanceInKm : 0
@@ -157,7 +134,15 @@ export const CheckIn = ({ navigation }) => {
   }
 
   if (device && openCamera) {
-    return renderCamera()
+    return (
+      <CameraComponent
+        onCapture={onCapture}
+        cameraRef={camera}
+        style={styles.fullScreen}
+        device={device}
+        loading={loading}
+      />
+    )
   }
 
   return (
@@ -166,7 +151,7 @@ export const CheckIn = ({ navigation }) => {
       <View style={styles.viewMap}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          style={styles.map}
+          style={styles.fullScreen}
           region={INITIAL_REGION}
           userLocationFastestInterval={1000}
           onUserLocationChange={onUserLocationChange}

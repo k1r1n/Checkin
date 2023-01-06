@@ -24,13 +24,7 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 30,
   },
-  cameraContainer: {
-    flex: 1,
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  map: {
+  fullScreen: {
     ...StyleSheet.absoluteFillObject,
   },
   detail: {
@@ -73,20 +67,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  capture: {
-    position: 'absolute',
-    width: 80,
-    bottom: 20,
-    zIndex: 999,
-    height: 80,
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    borderColor: 'orange',
-    borderWidth: 2,
-    borderRadius: 40,
-    backgroundColor: COLORS.WHITE,
-  },
   btn: {
     padding: 12,
     marginHorizontal: 5,
@@ -103,5 +83,25 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  cameraContainer: {
+    flex: 1,
+    position: 'relative',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  capture: {
+    position: 'absolute',
+    width: 80,
+    bottom: 20,
+    zIndex: 999,
+    height: 80,
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 40,
+    backgroundColor: COLORS.WHITE,
   },
 })
