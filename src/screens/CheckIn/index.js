@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, PermissionsAndroid, Text, Linking } from 'react-native'
+import { View, Text } from 'react-native'
 import { getPreciseDistance } from 'geolib'
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useCameraDevices } from 'react-native-vision-camera'
@@ -8,6 +8,7 @@ import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 import { Button, Header, CameraComponent } from '../../components'
 import { COLORS, INITIAL_REGION } from '../../constants'
+import { requestLocationPermission, requestCameraPermission } from '../../utils'
 import { styles } from './styles'
 
 export const CheckIn = ({ navigation }) => {
@@ -16,7 +17,7 @@ export const CheckIn = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [mark, setMark] = useState()
   const [radius, setRadius] = useState(0)
-  const [userLocation, setUserLocation] = useState()
+  const [userLocation, setUserLocation] = useState({})
   const devices = useCameraDevices()
   const device = devices.front
   const camera = useRef(null)
@@ -24,8 +25,6 @@ export const CheckIn = ({ navigation }) => {
   useEffect(() => {
     requestLocationPermission()
     getLocation()
-
-    return () => getLocation()
   }, [])
 
   const getLocation = () => {
@@ -38,34 +37,6 @@ export const CheckIn = ({ navigation }) => {
         setMark(location)
         setRadius(areaRadius)
       })
-  }
-
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      )
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Linking.openSettings()
-      }
-    } catch (err) {
-      console.warn(err)
-    }
-  }
-
-  const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      )
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setOpenCamera(true)
-      } else {
-        Linking.openSettings()
-      }
-    } catch (err) {
-      console.warn(err)
-    }
   }
 
   const onUserLocationChange = event => {
@@ -85,8 +56,12 @@ export const CheckIn = ({ navigation }) => {
     setDistance(dis - radius)
   }
 
+  const onGrantedCamera = () => {
+    setOpenCamera(true)
+  }
+
   const onCheckIn = () => {
-    requestCameraPermission()
+    requestCameraPermission(onGrantedCamera)
   }
 
   const onCapture = async () => {

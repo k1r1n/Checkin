@@ -104,10 +104,9 @@ export const History = ({ navigation }) => {
             <Image
               resizeMode='cover'
               style={styles.selfie}
-              source={{ uri: showData?.image }}
+              source={{ uri: showData.image }}
             />
             {renderDate()}
-
             <MapView
               provider={PROVIDER_GOOGLE}
               style={styles.map}
