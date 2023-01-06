@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, ToastAndroid } from 'react-native'
 import { getPreciseDistance } from 'geolib'
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useCameraDevices } from 'react-native-vision-camera'
@@ -85,6 +85,11 @@ export const CheckIn = ({ navigation }) => {
       .then(() => {
         setLoading(false)
         setOpenCamera(false)
+        ToastAndroid.showWithGravity(
+          'Successfully',
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+        )
       })
   }
 
