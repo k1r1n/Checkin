@@ -113,7 +113,7 @@ export const CheckIn = ({ navigation }) => {
     )
   }
 
-  if (device && openCamera) {
+  if (frontCamera && openCamera) {
     return (
       <CameraComponent
         onCapture={onCapture}
@@ -129,15 +129,15 @@ export const CheckIn = ({ navigation }) => {
     <View style={styles.container}>
       <Header title='Check-in on the map' />
       <View style={styles.viewMap}>
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={styles.fullScreen}
-          region={INITIAL_REGION}
-          userLocationFastestInterval={1000}
-          onUserLocationChange={onUserLocationChange}
-          showsUserLocation
-          showsCompass>
-          {mark && (
+        {mark && (
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={styles.fullScreen}
+            region={INITIAL_REGION}
+            userLocationFastestInterval={1000}
+            onUserLocationChange={onUserLocationChange}
+            showsUserLocation
+            showsCompass>
             <>
               <Circle
                 center={mark}
@@ -147,8 +147,8 @@ export const CheckIn = ({ navigation }) => {
               />
               <Marker coordinate={mark} />
             </>
-          )}
-        </MapView>
+          </MapView>
+        )}
       </View>
       <View style={styles.detail}>
         {renderMeter()}
