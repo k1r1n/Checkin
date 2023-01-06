@@ -14,7 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 import { Button } from '../../components'
-import { INITIAL_REGION } from '../../constants'
+import { COLORS, INITIAL_REGION } from '../../constants'
 import { styles } from './styles'
 
 export const CheckIn = ({ navigation }) => {
@@ -133,28 +133,14 @@ export const CheckIn = ({ navigation }) => {
   }
 
   const renderMeter = () => {
-    if (distance > 1000) {
-      return (
-        <View style={styles.location}>
-          <MaterialIcons name='place' size={32} color='orange' />
-          <Text style={styles.title}>{distance / 1000} km</Text>
-          <Text style={styles.subtitle}>to the destination</Text>
-        </View>
-      )
-    }
-    if (distance > 0 && distance < 1000) {
-      return (
-        <View style={styles.location}>
-          <Text style={styles.title}>{distance / 1000} km</Text>
-          <Text style={styles.subtitle}>to the destination</Text>
-        </View>
-      )
-    }
+    const unit = distance >= 1000 ? 'km' : 'm'
 
     return (
       <View style={styles.location}>
-        <MaterialIcons name='place' size={32} color='orange' />
-        <Text style={styles.title}>0 km</Text>
+        <MaterialIcons name='place' size={32} color={COLORS.ORANGE} />
+        <Text style={styles.title}>
+          {distance > 0 ? distance / 1000 : 0} {unit}
+        </Text>
         <Text style={styles.subtitle}>to the destination</Text>
       </View>
     )
@@ -181,8 +167,8 @@ export const CheckIn = ({ navigation }) => {
               <Circle
                 center={mark}
                 radius={radius}
-                strokeColor='orange'
-                fillColor='rgba(255,165,0,0.4)'
+                strokeColor={COLORS.ORANGE}
+                fillColor={COLORS.ORANGE_AREA}
               />
               <Marker coordinate={mark} />
             </>
@@ -203,14 +189,14 @@ export const CheckIn = ({ navigation }) => {
               onPress={() => {
                 navigation.navigate('history')
               }}>
-              <MaterialIcons name='history' size={32} color='orange' />
+              <MaterialIcons name='history' size={32} color={COLORS.ORANGE} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btn}
               onPress={() => {
                 navigation.navigate('setting')
               }}>
-              <MaterialIcons name='settings' size={32} color='orange' />
+              <MaterialIcons name='settings' size={32} color={COLORS.ORANGE} />
             </TouchableOpacity>
           </View>
         </View>

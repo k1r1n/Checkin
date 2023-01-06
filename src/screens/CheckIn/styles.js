@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native'
-
+import { COLORS } from '../../constants'
 const { height } = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     position: 'relative',
   },
   header: {
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a3263',
+    color: COLORS.INDIGO,
     alignSelf: 'flex-start',
   },
   viewMap: {
@@ -38,11 +38,11 @@ export const styles = StyleSheet.create({
     width: '100%',
     bottom: 0,
     height: 160,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: COLORS.BLACK,
     shadowOffset: {
       width: 5,
       height: 0,
@@ -53,12 +53,12 @@ export const styles = StyleSheet.create({
     elevation: 10,
   },
   title: {
-    color: '#1a3263',
+    color: COLORS.INDIGO,
     fontSize: 32,
     fontWeight: 'bold',
   },
   subtitle: {
-    color: '#999',
+    color: COLORS.GRAY,
     marginHorizontal: 10,
     fontSize: 20,
     marginTop: 9,
@@ -85,15 +85,15 @@ export const styles = StyleSheet.create({
     borderColor: 'orange',
     borderWidth: 2,
     borderRadius: 40,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.WHITE,
   },
   btn: {
     padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
-    shadowColor: 'rgba(0,0,0,0.5)',
-    backgroundColor: '#fff',
+    shadowColor: COLORS.BTN_SHADOW,
+    backgroundColor: COLORS.WHITE,
     elevation: 3,
   },
   navigation: {

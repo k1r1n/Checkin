@@ -10,18 +10,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     position: 'relative',
   },
-  header: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  route: {
-    marginHorizontal: 10,
-    fontSize: 28,
-    color: '#1a3263',
-  },
   viewMap: {
     width: '100%',
     height,

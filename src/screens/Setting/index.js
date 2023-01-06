@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View, TouchableOpacity, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { Slider } from '@miblanchard/react-native-slider'
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps'
-import IoniconsIcons from 'react-native-vector-icons/Ionicons'
 import firestore from '@react-native-firebase/firestore'
-import { Button } from '../../components'
-import { INITIAL_REGION, ROUTER_PATH } from '../../constants'
+import { Button, Header } from '../../components'
+import { COLORS, INITIAL_REGION, ROUTER_PATH } from '../../constants'
 import { styles } from './styles'
 
 export const Setting = ({ navigation }) => {
@@ -51,13 +50,10 @@ export const Setting = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}>
-          <IoniconsIcons name='chevron-back-circle' size={32} color='orange' />
-        </TouchableOpacity>
-        <Text style={styles.route}>Setting</Text>
-      </View>
+      <Header
+        title='Setting'
+        onBack={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}
+      />
       <View style={styles.viewMap}>
         <MapView
           provider={PROVIDER_GOOGLE}
@@ -70,8 +66,8 @@ export const Setting = ({ navigation }) => {
               <Circle
                 center={mark}
                 radius={Number(radius)}
-                strokeColor='orange'
-                fillColor='rgba(255,165,0,0.4)'
+                strokeColor={COLORS.ORANGE}
+                fillColor={COLORS.ORANGE_AREA}
               />
               <Marker
                 draggable
@@ -89,14 +85,14 @@ export const Setting = ({ navigation }) => {
             value={radius}
             step={100}
             onValueChange={value => setRadius(value)}
-            minimumValue={0}
+            minimumValue={100}
             maximumValue={10000}
             animateTransitions
-            minimumTrackTintColor='#fab95b'
+            minimumTrackTintColor={COLORS.YELLOW}
             thumbStyle={styles.thumb}
             trackStyle={styles.track}
           />
-          <Button title='Assigned' onPress={onSetLocation} />
+          <Button title='SET' onPress={onSetLocation} />
         </View>
       </View>
     </View>

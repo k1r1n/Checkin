@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import firestore from '@react-native-firebase/firestore'
-import IoniconsIcons from 'react-native-vector-icons/Ionicons'
+import { Header } from '../../components'
 import { INITIAL_REGION, ROUTER_PATH } from '../../constants'
 import { styles } from './styles'
 
@@ -47,21 +47,23 @@ export const History = ({ navigation }) => {
     return () => subscriber()
   }, [])
 
-  const onPress = item => {
-    setShowData(item)
+  const renderList = ({ item }) => {
+    const { image } = item
+
+    return (
+      <TouchableOpacity style={styles.box} onPress={() => setShowData(item)}>
+        <Image style={styles.image} source={{ uri: image }} />
+      </TouchableOpacity>
+    )
   }
 
-  const renderList = ({ item }) => (
-    <TouchableOpacity style={styles.box} onPress={() => onPress(item)}>
-      <Image style={styles.image} source={{ uri: item.image }} />
-    </TouchableOpacity>
-  )
-
   const renderDate = () => {
+    const { timestamp } = showData
+
     return (
       <Text style={styles.title}>
-        Created: ${new Date(showData.timestamp).toDateString()} $
-        {new Date(showData.timestamp).toLocaleTimeString()} at
+        Created: ${new Date(timestamp).toDateString()} $
+        {new Date(timestamp).toLocaleTimeString()} at
       </Text>
     )
   }
@@ -76,13 +78,10 @@ export const History = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}>
-          <IoniconsIcons name='chevron-back-circle' size={32} color='orange' />
-        </TouchableOpacity>
-        <Text style={styles.route}>History</Text>
-      </View>
+      <Header
+        title='History'
+        onBack={() => navigation.navigate(ROUTER_PATH.CHECK_IN)}
+      />
       <FlatList data={list} numColumns={3} renderItem={renderList} />
       {showData && (
         <Modal
