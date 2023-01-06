@@ -19,7 +19,7 @@ export const CheckIn = ({ navigation }) => {
   const [radius, setRadius] = useState(0)
   const [userLocation, setUserLocation] = useState({})
   const devices = useCameraDevices()
-  const device = devices.front
+  const frontCamera = devices.front
   const camera = useRef(null)
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const CheckIn = ({ navigation }) => {
         onCapture={onCapture}
         cameraRef={camera}
         style={styles.fullScreen}
-        device={device}
+        device={frontCamera}
         loading={loading}
       />
     )
