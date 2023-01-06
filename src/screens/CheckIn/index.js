@@ -13,7 +13,7 @@ import { Camera, useCameraDevices } from 'react-native-vision-camera'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
-import { Button } from '../../components'
+import { Button, Header } from '../../components'
 import { COLORS, INITIAL_REGION } from '../../constants'
 import { styles } from './styles'
 
@@ -30,8 +30,13 @@ export const CheckIn = ({ navigation }) => {
 
   useEffect(() => {
     requestLocationPermission()
+    getLocation()
 
-    const subscriber = firestore()
+    return () => getLocation()
+  }, [])
+
+  const getLocation = () => {
+    firestore()
       .collection('setting')
       .doc('distance')
       .onSnapshot(documentSnapshot => {
@@ -40,8 +45,7 @@ export const CheckIn = ({ navigation }) => {
         setMark(location)
         setRadius(areaRadius)
       })
-    return () => subscriber()
-  }, [])
+  }
 
   const requestLocationPermission = async () => {
     try {
@@ -116,6 +120,10 @@ export const CheckIn = ({ navigation }) => {
       })
   }
 
+  const onNavigate = routerName => {
+    navigation.navigate(routerName)
+  }
+
   const renderCamera = () => {
     return (
       <View style={styles.cameraContainer}>
@@ -133,13 +141,15 @@ export const CheckIn = ({ navigation }) => {
   }
 
   const renderMeter = () => {
+    const distanceInKm = distance / 1000
+    const distanceLabel = distance > 0 ? distanceInKm : 0
     const unit = distance >= 1000 ? 'km' : 'm'
 
     return (
       <View style={styles.location}>
         <MaterialIcons name='place' size={32} color={COLORS.ORANGE} />
         <Text style={styles.title}>
-          {distance > 0 ? distance / 1000 : 0} {unit}
+          {distanceLabel} {unit}
         </Text>
         <Text style={styles.subtitle}>to the destination</Text>
       </View>
@@ -152,7 +162,7 @@ export const CheckIn = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Check-in on the map</Text>
+      <Header title='Check-in on the map' />
       <View style={styles.viewMap}>
         <MapView
           provider={PROVIDER_GOOGLE}
@@ -184,20 +194,16 @@ export const CheckIn = ({ navigation }) => {
             isDisabled={distance >= 0}
           />
           <View style={styles.navigation}>
-            <TouchableOpacity
+            <Button
               style={styles.btn}
-              onPress={() => {
-                navigation.navigate('history')
-              }}>
-              <MaterialIcons name='history' size={32} color={COLORS.ORANGE} />
-            </TouchableOpacity>
-            <TouchableOpacity
+              icon='history'
+              onPress={() => onNavigate('history')}
+            />
+            <Button
               style={styles.btn}
-              onPress={() => {
-                navigation.navigate('setting')
-              }}>
-              <MaterialIcons name='settings' size={32} color={COLORS.ORANGE} />
-            </TouchableOpacity>
+              icon='settings'
+              onPress={() => onNavigate('setting')}
+            />
           </View>
         </View>
       </View>

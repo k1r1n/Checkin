@@ -20,7 +20,13 @@ export const History = ({ navigation }) => {
   const [showData, setShowData] = useState()
 
   useEffect(() => {
-    const subscriber = firestore()
+    getHistory()
+
+    return () => getHistory()
+  }, [])
+
+  const getHistory = () => {
+    firestore()
       .collection('checkin')
       .orderBy('timestamp', 'desc')
       .onSnapshot(querySnapshot => {
@@ -43,9 +49,7 @@ export const History = ({ navigation }) => {
           clearTimeout(timeOut)
         }, 300)
       })
-
-    return () => subscriber()
-  }, [])
+  }
 
   const renderList = ({ item }) => {
     const { image } = item
@@ -59,11 +63,12 @@ export const History = ({ navigation }) => {
 
   const renderDate = () => {
     const { timestamp } = showData
+    const dateTime = new Date(timestamp)
 
     return (
       <Text style={styles.title}>
-        Created: ${new Date(timestamp).toDateString()} $
-        {new Date(timestamp).toLocaleTimeString()} at
+        Created: {dateTime.toDateString()}
+        {dateTime.toLocaleTimeString()} at
       </Text>
     )
   }

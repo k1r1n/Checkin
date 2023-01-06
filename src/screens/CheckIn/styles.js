@@ -89,6 +89,7 @@ export const styles = StyleSheet.create({
   },
   btn: {
     padding: 12,
+    marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
